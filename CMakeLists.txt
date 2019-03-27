@@ -9,8 +9,9 @@ add_executable(Suffering2 main.cpp libs.h shader.h)
 target_link_libraries(Suffering2 "/usr/local/lib/libglfw.3.3.dylib")
 include_directories("/usr/local/Cellar/glfw/3.2.1/include/GLFW")
 
+include_directories("/Users/savage/Documents/stb_image/")
+
 target_link_libraries(Suffering2 "/Users/savage/Documents/glad/libglad.dylib")
 include_directories("/Users/savage/Documents/glad/include/")
 
-include_directories("/usr/local/Cellar/glm/0.9.9.3/include/glm")
-include_directories("/Users/savage/Documents/OpenGLProject/OpenGL/OpenGL/SOIL2")
+include_directories("/usr/local/Cellar/glm/0.9.9.3/include/")
