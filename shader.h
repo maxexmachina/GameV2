@@ -11,6 +11,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Shader
 {
@@ -107,9 +109,34 @@ public:
     void setFloat(const std::string &name, float value) const {
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
     }
-    void set4Floats(const std::string &name, float value1, float value2, float value3, float value4) {
-        glUniform4f(glGetUniformLocation(ID, name.c_str()), value1, value2, value3, value4);
+    void setVec2(const std::string &name, const glm::vec2 &value) {
+        glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(value));
     }
+    void setVec2(const std::string &name, float x, float y) {
+        glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
+    }
+    void setVec3(const std::string &name, const glm::vec3 &value) {
+        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(value));
+    }
+    void setVec3(const std::string &name, float x, float y, float z) {
+        glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
+    }
+    void setVec4(const std::string &name, const glm::vec4 &value) {
+        glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(value));
+    }
+    void setVec4(const std::string &name, float x, float y, float z, float w) {
+        glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
+    }
+    void setMat2(const std::string &name, const glm::mat2 &matrix) {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+    void setMat3(const std::string &name, const glm::mat3 &matrix) {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+    void setMat4(const std::string &name, const glm::mat4 &matrix) {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+
 };
 
 #endif //SUFFERING2_SHADER_H
