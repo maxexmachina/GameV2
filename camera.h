@@ -8,6 +8,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <math.h>
 
 #include <vector>
 
@@ -55,20 +56,36 @@ public:
         return glm::lookAt(Position, Position + Front, Up);
     }
 
-    void processKeyboard(CameraMovement direction, float deltaTime) {
+    glm::vec3 processKeyboard(CameraMovement direction, float deltaTime) {
+        glm::vec3 dx, dz;
         float velocity = MovementSpeed * deltaTime;
-        if (direction == FORWARD)
+        if (direction == FORWARD) {
+            glm::vec3 p1z = Position;
             Position += Front * velocity;
-        if (direction == BACKWARD)
+            dz = Position - p1z;
+        }
+        if (direction == BACKWARD) {
+            glm::vec3 p1z = Position;
             Position -= Front * velocity;
-        if (direction == RIGHT)
+            dz = Position - p1z;
+        }
+        if (direction == RIGHT) {
+            glm::vec3 p1x = Position;
             Position += Right * velocity;
-        if (direction == LEFT)
+            dx = Position - p1x;
+        }
+        if (direction == LEFT) {
+            glm::vec3 p1x = Position;
             Position -= Right * velocity;
+            dx = Position - p1x;
+        }
         if (direction == UP)
             Position += Up * velocity;
         if (direction == DOWN)
             Position -= Up * velocity;
+        Position.y = 0.0f;
+        return dx + dz;
+
     }
 
     void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) {
