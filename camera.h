@@ -25,7 +25,7 @@ enum CameraMovement {
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float SPEED = 2.5f;
-const float SENSITIVITY = 0.1f;
+const float SENSITIVITY = 0.2f;
 
 class Camera {
 public:
@@ -35,6 +35,7 @@ public:
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
+    glm::vec3 displacement;
     //Euler angles
     float Yaw;
     float Pitch;
@@ -55,10 +56,9 @@ public:
     glm::mat4 getViewMatrix() {
         return glm::lookAt(Position, Position + Front, Up);
     }
-
-    glm::vec3 processKeyboard(CameraMovement direction, float deltaTime) {
+    void processKeyboard(CameraMovement direction, float deltaTime) {
         glm::vec3 dx, dz;
-        float velocity = MovementSpeed * deltaTime;
+        float velocity = MovementSpeed * 0.01f;
         if (direction == FORWARD) {
             glm::vec3 p1z = Position;
             Position += Front * velocity;
@@ -84,7 +84,7 @@ public:
         if (direction == DOWN)
             Position -= Up * velocity;
         Position.y = 0.0f;
-        return dx + dz;
+        displacement = dx + dz;
 
     }
 

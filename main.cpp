@@ -3,7 +3,18 @@
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+bool ifIntersect(glm::vec3 wallPos, float rotation, glm::vec3 Pos, glm::vec3 Displacement) {
 
+    glm::mat2 Kram1 = glm::mat2x2(wallPos.x - Pos.x, 1 * cos(rotation), wallPos.z - Pos.z, 1 * sin(rotation));
+    glm::mat2 Kram2 = glm::mat2x2(Displacement.x, wallPos.x - Pos.x, Displacement.z, wallPos.z - Pos.z);
+    glm::mat2 Kram = glm::mat2x2(Displacement.x, 1 * cos(rotation), Displacement.z, 1 * sin(rotation));
+
+    float t1 = glm::determinant(Kram1) / glm::determinant(Kram);
+    float t2 = glm::determinant(Kram2) / glm::determinant(Kram);
+
+    if (t1 < 1.5 and t1 > -1.5 and t2 < -0.5 and t2 > -1.5)
+        return true;
+}
 const unsigned scrWidth = 800;
 const unsigned scrHeight = 600;
 
@@ -15,57 +26,43 @@ glm::vec3 cubePositions[] = {
         glm::vec3( 2.0f,  0.0f,  0.0f),
         glm::vec3( 3.0f,  0.0f,  0.0f),
         glm::vec3( 4.0f, 0.0f, 0.0f),
-        glm::vec3( 0.0f,  0.0f, 2.0f),
-        glm::vec3( 1.0f,  0.0f,  2.0f),
-        glm::vec3( 2.0f,  0.0f,  2.0f),
-        glm::vec3( 3.0f,  0.0f, 2.0f),
-        glm::vec3( 4.0f,  0.0f, 2.0f)
+        glm::vec3( 0.0f,  0.0f, 1.0f),
+        glm::vec3( 1.0f,  0.0f,  1.0f),
+        glm::vec3( 2.0f,  0.0f,  1.0f),
+        glm::vec3( 3.0f,  0.0f, 1.0f),
+        glm::vec3( 4.0f,  0.0f, 1.0f),
+        glm::vec3( -1.0f,  0.0f,  0.0f),
+        glm::vec3( -2.0f,  0.0f,  0.0f),
+
+};
+
+float wallRotation[] {
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f
 };
 
 float vertices[] = {
-        //Vert coord          //Texcoord
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+        // positions           // texture coords
+        0.5f,  0.5f, 0.0f,     1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,     1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,    0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, 0.0f,    0.0f, 1.0f    // top left
 };
+
+/*unsigned int indices[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+};*/
 
 float mixerValue = 0.5;
 float scaleAm = 1.0f;
@@ -198,7 +195,7 @@ int main() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -225,22 +222,31 @@ int main() {
         myShader.setMat4("view", view);
 
         glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), (float)(scrWidth)/(float)(scrHeight), 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(45.0f), (float)(scrWidth)/(float)(scrHeight), 0.001f, 100.0f);
         myShader.setMat4("projection", projection);
 
         glBindVertexArray(VAO);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 12; i++) {
             glm::mat4 model = glm::mat4(1.0f);
+            float angle = wallRotation[i];
             model = glm::translate(model, cubePositions[i]);
-            //float angle = 20.0f * i;
-            //model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 1.0f, 1.0f));
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
             myShader.setMat4("model", model);
 
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         }
 
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for (int i = 0; i < 12; i++) {
+            if(ifIntersect(cubePositions[i], wallRotation[i], camera.Position, camera.displacement))
+                camera.Position -= camera.displacement;
+            //std::cout << "t1 = " << t1 << " ";
+            //std::cout << "t2 = " << t2 << " ";
+            //glm::vec2 intersect = (glm::vec2(cubePositions[1].x + 0.5*cos(wallRotation[1])*t1, cubePositions[1].z - 0.5*sin(wallRotation[1])*t1));
+            //std::cout << "x = " << intersect.x << " z = " << intersect.y ;
+            //std::cout << " dx = " << camera.displacement.x << " dz = " << camera.displacement.z << std::endl;
+        }
+
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
 
