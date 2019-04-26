@@ -5,13 +5,17 @@ void processInput(GLFWwindow* window);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 bool ifIntersect(glm::vec3 wallPos, float rotation, glm::vec3 Pos, glm::vec3 Displacement) {
 
+    //Расчет по правилу Крамера
     glm::mat2 Kram1 = glm::mat2x2(wallPos.x - Pos.x, cos(rotation), wallPos.z - Pos.z, sin(rotation));
     glm::mat2 Kram2 = glm::mat2x2(Displacement.x, wallPos.x - Pos.x, Displacement.z, wallPos.z - Pos.z);
     glm::mat2 Kram = glm::mat2x2(Displacement.x, cos(rotation), Displacement.z, sin(rotation));
 
+    //Параметр точки пересечения на прямой, заданной вектором перемещения
     float t1 = glm::determinant(Kram1) / glm::determinant(Kram);
+    //Параметр точки пересечения на прямой, заданной стенкой
     float t2 = glm::determinant(Kram2) / glm::determinant(Kram);
-   // std::cout << t1 << ", " << t2 << std::endl;
+
+    // std::cout << t1 << ", " << t2 << std::endl;
 
     if (t1 < 1 and t1 > -1 and t2 < 0.5 and t2 > -0.5)
         return true;
