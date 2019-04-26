@@ -5,14 +5,15 @@ void processInput(GLFWwindow* window);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 bool ifIntersect(glm::vec3 wallPos, float rotation, glm::vec3 Pos, glm::vec3 Displacement) {
 
-    glm::mat2 Kram1 = glm::mat2x2(wallPos.x - Pos.x, 1 * cos(rotation), wallPos.z - Pos.z, 1 * sin(rotation));
+    glm::mat2 Kram1 = glm::mat2x2(wallPos.x - Pos.x, cos(rotation), wallPos.z - Pos.z, sin(rotation));
     glm::mat2 Kram2 = glm::mat2x2(Displacement.x, wallPos.x - Pos.x, Displacement.z, wallPos.z - Pos.z);
-    glm::mat2 Kram = glm::mat2x2(Displacement.x, 1 * cos(rotation), Displacement.z, 1 * sin(rotation));
+    glm::mat2 Kram = glm::mat2x2(Displacement.x, cos(rotation), Displacement.z, sin(rotation));
 
     float t1 = glm::determinant(Kram1) / glm::determinant(Kram);
     float t2 = glm::determinant(Kram2) / glm::determinant(Kram);
+   // std::cout << t1 << ", " << t2 << std::endl;
 
-    if (t1 < 1.5 and t1 > -1.5 and t2 < -0.5 and t2 > -1.5)
+    if (t1 < 1 and t1 > -1 and t2 < 0.5 and t2 > -0.5)
         return true;
 }
 const unsigned scrWidth = 800;
@@ -33,6 +34,11 @@ glm::vec3 cubePositions[] = {
         glm::vec3( 4.0f,  0.0f, 1.0f),
         glm::vec3( -1.0f,  0.0f,  0.0f),
         glm::vec3( -2.0f,  0.0f,  0.0f),
+        glm::vec3( 0.0f,  -0.5f,  0.5f),
+        glm::vec3( 1.0f,  -0.5f,  0.5f),
+        glm::vec3( 2.0f,  -0.5f,  0.5f),
+        glm::vec3( 3.0f,  -0.5f,  0.5f),
+        glm::vec3( 4.0f, -0.5f, 0.5f),
 
 };
 
@@ -195,7 +201,7 @@ int main() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -236,19 +242,19 @@ int main() {
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         }
 
-        for (int i = 0; i < 12; i++) {
-            if(ifIntersect(cubePositions[i], wallRotation[i], camera.Position, camera.displacement))
-                camera.Position -= camera.displacement;
-            //std::cout << "t1 = " << t1 << " ";
-            //std::cout << "t2 = " << t2 << " ";
-            //glm::vec2 intersect = (glm::vec2(cubePositions[1].x + 0.5*cos(wallRotation[1])*t1, cubePositions[1].z - 0.5*sin(wallRotation[1])*t1));
-            //std::cout << "x = " << intersect.x << " z = " << intersect.y ;
-            //std::cout << " dx = " << camera.displacement.x << " dz = " << camera.displacement.z << std::endl;
+        for (int i = 12; i < 17; i++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            myShader.setMat4("model", model);
+
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         }
 
-        //glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
+        for (int i = 0; i < 12; i++) {
+            if (ifIntersect(cubePositions[i], wallRotation[i], camera.Position, camera.displacement))
+                camera.Position -= camera.displacement;
+        }
 
         glfwSwapBuffers(window);
         glFlush();
@@ -338,7 +344,4 @@ void processInput(GLFWwindow* window) {
     if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         camera.processKeyboard(UP, deltaTime);
     }
-
-
-
 }

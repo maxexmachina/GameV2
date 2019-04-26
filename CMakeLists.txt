@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(Suffering2)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo")
+set(CMAKE_CXX_FLAGS "-framework OpenGL")
 
 add_executable(Suffering2 main.cpp libs.h shader.h camera.h)
 
