@@ -35,7 +35,7 @@ public:
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
-    glm::vec3 displacement;
+
     //Euler angles
     float Yaw;
     float Pitch;
@@ -57,34 +57,28 @@ public:
         return glm::lookAt(Position, Position + Front, Up);
     }
     void processKeyboard(CameraMovement direction, float deltaTime) {
-        glm::vec3 dx, dz;
+        float dx = 0;
+        float dz = 0;
         float velocity = MovementSpeed * 0.01f;
+
         if (direction == FORWARD) {
-            glm::vec3 p1z = Position;
             Position += Front * velocity;
-            dz = Position - p1z;
         }
         if (direction == BACKWARD) {
-            glm::vec3 p1z = Position;
             Position -= Front * velocity;
-            dz = Position - p1z;
         }
         if (direction == RIGHT) {
-            glm::vec3 p1x = Position;
             Position += Right * velocity;
-            dx = Position - p1x;
         }
         if (direction == LEFT) {
-            glm::vec3 p1x = Position;
             Position -= Right * velocity;
-            dx = Position - p1x;
         }
         if (direction == UP)
             Position += Up * velocity;
         if (direction == DOWN)
             Position -= Up * velocity;
+
         Position.y = 0.0f;
-        displacement = dx + dz;
 
     }
 
